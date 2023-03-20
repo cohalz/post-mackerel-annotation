@@ -2,7 +2,7 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-   api-key:
+  api-key:
     required: true
     description: 'API Key value of Mackerel. Should be stored in GitHub Secrets.'
   title:
