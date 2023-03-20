@@ -25,5 +25,17 @@ jobs:
           title: annotation title
           description: annotation description
           service: ${{ secrets.MACKEREL_SERVICE }}
-            
-          
+      - id: vars
+        run: |
+          echo "from_time=$(date +%s --date '5 minutes ago')" >> "$GITHUB_OUTPUT"
+          echo "to_time=$(date +%s --date '4 minutes ago')" >> "$GITHUB_OUTPUT"
+      - uses: ./
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          title: annotation title2
+          description: annotation description2
+          from: ${{ steps.vars.outputs.from_time }}
+          to: ${{ steps.vars.outputs.to_time }}
+          service: ${{ secrets.MACKEREL_SERVICE }}
+          roles: |
+            ${{ secrets.MACKEREL_ROLE }}
