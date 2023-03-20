@@ -1,6 +1,93 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 134:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createGraphAnnotation = exports.constructGraphAnnotationData = exports.constructGraphAnnotationEndpoint = exports.prepareHttpClient = void 0;
+const core = __importStar(__nccwpck_require__(186));
+const http = __importStar(__nccwpck_require__(255));
+const API_BASE_URL = 'https://api.mackerelio.com';
+function prepareHttpClient(apiKey) {
+    const client = new http.HttpClient('cohalz/post-mackerel-annotation (https://github.com/cohalz/post-mackerel-annotation)');
+    client.requestOptions = {
+        headers: {
+            'X-Api-Key': apiKey,
+            'Content-Type': 'application/json'
+        }
+    };
+    return client;
+}
+exports.prepareHttpClient = prepareHttpClient;
+// https://mackerel.io/api-docs/entry/graph-annotations#create
+function constructGraphAnnotationEndpoint() {
+    const url = new URL('/api/v0/graph-annotations', API_BASE_URL);
+    return url.toString();
+}
+exports.constructGraphAnnotationEndpoint = constructGraphAnnotationEndpoint;
+function constructGraphAnnotationData(title, description, from, to, service, roles) {
+    const annotationData = {
+        title,
+        description,
+        from,
+        to,
+        service,
+        roles
+    };
+    return JSON.stringify(annotationData);
+}
+exports.constructGraphAnnotationData = constructGraphAnnotationData;
+function createGraphAnnotation(apiKey, title, description, from, to, service, roles) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const client = prepareHttpClient(apiKey);
+        const endpoint = constructGraphAnnotationEndpoint();
+        const postData = constructGraphAnnotationData(title, description, from, to, service, roles);
+        core.debug(`Endpoint: ${endpoint}`);
+        core.debug(`PostData: ${postData}`);
+        const result = yield client.post(endpoint, postData);
+        if (result.message.statusCode !== 200) {
+            const response = yield result.readBody();
+            throw new Error(`StatusCode: ${result.message.statusCode}, Message: ${response}`);
+        }
+        return result;
+    });
+}
+exports.createGraphAnnotation = createGraphAnnotation;
+
+
+/***/ }),
+
 /***/ 109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -36,16 +123,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const wait_1 = __nccwpck_require__(817);
+const mackerel_1 = __nccwpck_require__(134);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield (0, wait_1.wait)(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
-            core.setOutput('time', new Date().toTimeString());
+            const title = core.getInput('title', { required: true });
+            const description = core.getInput('description', {
+                required: false
+            });
+            const from = core.getInput('from', { required: false });
+            const to = core.getInput('to', { required: false });
+            const apiKey = core.getInput('api-key', { required: true });
+            const service = core.getInput('service', { required: true });
+            const roles = core.getMultilineInput('roles', {
+                required: false
+            });
+            const currentTime = Math.floor(Date.now() / 1000);
+            const fromTime = from !== '' ? Number(from) : currentTime;
+            const toTime = to !== '' ? Number(to) : currentTime;
+            core.debug(`Service: ${service}, Roles: ${roles}, Title: ${title}, Description: ${description}, From: ${fromTime}, To: ${toTime}`);
+            // Post values to Mackerel service metrics.
+            yield (0, mackerel_1.createGraphAnnotation)(apiKey, title, description, fromTime, toTime, service, roles);
         }
         catch (error) {
             if (error instanceof Error)
@@ -54,37 +152,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 817:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
-        });
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),
