@@ -23,7 +23,6 @@ async function run(): Promise<void> {
       `Service: ${service}, Roles: ${roles}, Title: ${title}, Description: ${description}, From: ${fromTime}, To: ${toTime}`
     )
 
-    // Post values to Mackerel service metrics.
     await createGraphAnnotation(
       apiKey,
       title,
