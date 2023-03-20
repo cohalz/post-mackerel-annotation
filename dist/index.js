@@ -142,7 +142,6 @@ function run() {
             const fromTime = from !== '' ? Number(from) : currentTime;
             const toTime = to !== '' ? Number(to) : currentTime;
             core.debug(`Service: ${service}, Roles: ${roles}, Title: ${title}, Description: ${description}, From: ${fromTime}, To: ${toTime}`);
-            // Post values to Mackerel service metrics.
             yield (0, mackerel_1.createGraphAnnotation)(apiKey, title, description, fromTime, toTime, service, roles);
         }
         catch (error) {
