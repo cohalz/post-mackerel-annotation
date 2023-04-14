@@ -1,16 +1,37 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import { createGraphAnnotation } from './mackerel'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const title: string = core.getInput('title', { required: true })
+    const description: string = core.getInput('description', {
+      required: false
+    })
+    const from: string = core.getInput('from', { required: false })
+    const to: string = core.getInput('to', { required: false })
+    const apiKey: string = core.getInput('api-key', { required: true })
+    const service: string = core.getInput('service', { required: true })
+    const roles: string[] = core.getMultilineInput('roles', {
+      required: false
+    })
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const currentTime = Math.floor(Date.now() / 1000)
+    const fromTime = from !== '' ? Number(from) : currentTime
+    const toTime = to !== '' ? Number(to) : currentTime
 
-    core.setOutput('time', new Date().toTimeString())
+    core.debug(
+      `Service: ${service}, Roles: ${roles}, Title: ${title}, Description: ${description}, From: ${fromTime}, To: ${toTime}`
+    )
+
+    await createGraphAnnotation(
+      apiKey,
+      title,
+      description,
+      fromTime,
+      toTime,
+      service,
+      roles
+    )
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

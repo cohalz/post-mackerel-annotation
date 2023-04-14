@@ -2,10 +2,27 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  milliseconds: # change this
+  api-key:
+    required: true
+    description: 'API Key value of Mackerel. Should be stored in GitHub Secrets.'
+  title:
     required: true
     description: 'input description here'
-    default: 'default value if applicable'
+  description:
+    required: false
+    description: 'Annotation details'
+  from:
+    required: false
+    description: 'Starting time (epoch seconds)'
+  to:
+    required: false
+    description: 'Ending time (epoch seconds)'
+  service:
+    required: true
+    description: 'Service name'
+  roles:
+    required: false
+    description: 'Role name list'
 runs:
   using: 'node16'
   main: 'dist/index.js'

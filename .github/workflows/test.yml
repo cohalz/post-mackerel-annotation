@@ -10,7 +10,11 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.tool-versions'
       - run: |
           npm install
       - run: |
@@ -18,7 +22,26 @@ jobs:
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - id: vars
+        run: |
+          echo "from_time=$(date +%s --date '5 minutes ago')" >> "$GITHUB_OUTPUT"
+          echo "to_time=$(date +%s --date '4 minutes ago')" >> "$GITHUB_OUTPUT"
       - uses: ./
+        name: test with default value
         with:
-          milliseconds: 1000
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          title: annotation title
+          description: annotation description (run_id=${{ github.run_id }}, run_number=${{ github.run_number }})
+          service: ${{ secrets.MACKEREL_SERVICE }}
+      - uses: ./
+        name: test
+        with:
+          api-key: ${{ secrets.MACKEREL_APIKEY }}
+          title: annotation title2
+          description: annotation description2 (run_id=${{ github.run_id }}, run_number=${{ github.run_number }})
+          from: ${{ steps.vars.outputs.from_time }}
+          to: ${{ steps.vars.outputs.to_time }}
+          service: ${{ secrets.MACKEREL_SERVICE }}
+          roles: |
+            ${{ secrets.MACKEREL_ROLE }}
