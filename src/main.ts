@@ -32,6 +32,8 @@ async function run(): Promise<void> {
       service,
       roles
     )
+
+    core.setOutput('time', currentTime)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

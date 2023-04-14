@@ -151,6 +151,7 @@ function run() {
             const toTime = to !== '' ? Number(to) : currentTime;
             core.debug(`Service: ${service}, Roles: ${roles}, Title: ${title}, Description: ${description}, From: ${fromTime}, To: ${toTime}`);
             yield (0, mackerel_1.createGraphAnnotation)(apiKey, title, description, fromTime, toTime, service, roles);
+            core.setOutput('time', currentTime);
         }
         catch (error) {
             if (error instanceof Error)
