@@ -11,10 +11,6 @@ This action is inspired by the [yutailang0119/action-mackerel-api](https://githu
 - `api-key` (required): API Key value of Mackerel. Should be stored in GitHub Secrets.
 - `service-name` (required): The Mackerel service name you want to post metrics to.
 
-## Outputs
-
-- `time`: The time used to post the metric (epoch seconds).
-
 ## Example Usage
 
 ```yaml
