@@ -32,7 +32,6 @@ async function run(): Promise<void> {
       service,
       roles
     )
-
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
