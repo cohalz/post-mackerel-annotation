@@ -38,7 +38,7 @@ jobs:
         with:
           api-key: ${{ secrets.MACKEREL_APIKEY }}
           title: annotation title2
-          description: annotation description2 (https://github.com/cohalz/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          description: annotation description2 (https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           from: ${{ steps.vars.outputs.from_time }}
           to: ${{ steps.vars.outputs.to_time }}
           service: ${{ secrets.MACKEREL_SERVICE }}
