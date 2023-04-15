@@ -32,14 +32,13 @@ jobs:
         with:
           api-key: ${{ secrets.MACKEREL_APIKEY }}
           title: annotation title
-          description: annotation description (run_id=${{ github.run_id }}, run_number=${{ github.run_number }})
           service: ${{ secrets.MACKEREL_SERVICE }}
       - uses: ./
         name: test
         with:
           api-key: ${{ secrets.MACKEREL_APIKEY }}
           title: annotation title2
-          description: annotation description2 (run_id=${{ github.run_id }}, run_number=${{ github.run_number }})
+          description: annotation description2 (https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           from: ${{ steps.vars.outputs.from_time }}
           to: ${{ steps.vars.outputs.to_time }}
           service: ${{ secrets.MACKEREL_SERVICE }}
