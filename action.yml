@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Post graph annotation to Mackerel'
+description: 'This is a simple action that posts a graph annotation to Mackerel (https://mackerel.io/).'
+author: 'cohalz'
 inputs:
   api-key:
     required: true
