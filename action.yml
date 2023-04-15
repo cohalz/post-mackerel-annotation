@@ -7,10 +7,10 @@ inputs:
     description: 'API Key value of Mackerel. Should be stored in GitHub Secrets.'
   title:
     required: true
-    description: 'input description here'
+    description: 'Annotation title'
   description:
     required: false
-    description: 'Annotation details'
+    description: '[optional] Annotation details'
   from:
     required: false
     description: 'Starting time (epoch seconds)'
@@ -22,7 +22,7 @@ inputs:
     description: 'Service name'
   roles:
     required: false
-    description: 'Role name list'
+    description: '[optional] Role name array (omit this field to register an annotation related to the service)'
 runs:
   using: 'node16'
   main: 'dist/index.js'
